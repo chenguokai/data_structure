@@ -16,6 +16,43 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::init_right() {
+    right_city = new QVBoxLayout;
+
+    right_route = new QVBoxLayout;
+    right_view->addLayout(right_city);
+    right_view->addStretch(3);
+    right_view->addLayout(right_route);
+    search_city = new QLabel;
+    search_city->setText("搜索城市");
+    search_route = new QLabel;
+    search_route->setText("搜索路线");
+
+    search_city_log = new QPlainTextEdit;
+    search_city_log->setFixedHeight(200);
+    search_city_log->setReadOnly(true);
+
+    search_route_log = new QPlainTextEdit;
+    search_route_log->setFixedHeight(200);
+    search_route_log->setReadOnly(true);
+
+
+    add_city = new QPushButton;
+    del_city = new QPushButton;
+    add_route = new QPushButton;
+    del_route = new QPushButton;
+
+    add_city->setText("添加城市");
+    del_city->setText("删除城市");
+    add_route->setText("添加路线");
+    del_route->setText("删除路线");
+
+    right_city->addWidget(search_city);
+    right_city->addWidget(search_city_log);
+    right_route->addWidget(search_route);
+    right_route->addWidget(search_route_log);
+}
+
 void MainWindow::initUI() {
     from_station = new QComboBox;
     to_station = new QComboBox;
@@ -70,8 +107,21 @@ void MainWindow::initUI() {
     mainview->addLayout(modeview);
     mainview->addWidget(result);
     mainview->addLayout(kickview);
+
+
+    right_view = new QHBoxLayout;
+    init_right();
+
+    real_mainview = new QHBoxLayout;
+    real_mainview->addLayout(mainview);
+    real_mainview->addStretch(1);
+    real_mainview->addLayout(right_view);
+
+
+
+
     auto central = new QWidget;
-    central->setLayout(mainview);
+    central->setLayout(real_mainview);
     setCentralWidget(central);
 }
 

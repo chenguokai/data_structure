@@ -22,6 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void initUI();
+    void init_right();
     void initSlots();
     QComboBox* from_station;
     QComboBox* to_station;
@@ -36,7 +37,16 @@ public:
     QPlainTextEdit* result;
     QPushButton* kickstart;
     QHBoxLayout* kickview;
-
+    QHBoxLayout* real_mainview;
+    QHBoxLayout* right_view;
+    QVBoxLayout* right_city;
+    QVBoxLayout* right_route;
+    QLabel* search_city;
+    QLabel* search_route;
+    QLabel *search_route_start, *search_route_end;
+    QPlainTextEdit* search_city_log;
+    QPlainTextEdit* search_route_log;
+    QPushButton *add_city, *del_city, *add_route, *del_route;
 
 
 private:
