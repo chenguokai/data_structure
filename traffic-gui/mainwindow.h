@@ -25,6 +25,10 @@ public:
     void initUI();
     void init_right();
     void initSlots();
+    int city_mode; // the button's function
+    int route_mode; // the button's function
+#define ADD_OP 1
+#define DEL_OP 2
     QComboBox* from_station;
     QComboBox* to_station;
     QComboBox* mode;
@@ -56,7 +60,14 @@ public:
     QHBoxLayout* search_route_input_view;
     QHBoxLayout* search_city_edit;
     QHBoxLayout* search_route_edit;
-
+private slots:
+    void start_route();
+    void add_city_func();
+    void del_city_func();
+    void start_city_search();
+    void start_route_search();
+    void add_route_func();
+    void del_route_func();
 
 private:
     Ui::MainWindow *ui;

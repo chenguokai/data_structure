@@ -26,7 +26,8 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    algorithm.cpp
 
 HEADERS += \
         mainwindow.h

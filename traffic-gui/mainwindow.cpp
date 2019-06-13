@@ -179,5 +179,13 @@ void MainWindow::initUI() {
 }
 
 void MainWindow::initSlots() {
-
+    connect(kickstart,SIGNAL(clicked(bool)),this,SLOT(start_route()));
+    connect(search_city_input,SIGNAL(returnPressed()),this,SLOT(start_city_search()));
+    connect(search_route_start_input,SIGNAL(returnPressed()),this,SLOT(start_route_search()));
+    connect(search_route_end_input,SIGNAL(returnPressed()),this,SLOT(start_route_search()));
+    connect(search_route_num_input,SIGNAL(returnPressed()),this,SLOT(start_route_search()));
+    connect(add_city,SIGNAL(clicked(bool)),this,SLOT(add_city_func()));
+    connect(del_city,SIGNAL(clicked(bool)),this,SLOT(del_city_func()));
+    connect(add_route,SIGNAL(clicked(bool)),this,SLOT(add_route_func()));
+    connect(del_route,SIGNAL(clicked(bool)),this,SLOT(del_route_func()));
 }
