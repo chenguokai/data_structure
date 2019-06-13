@@ -29,11 +29,13 @@ void MainWindow::init_right() {
     search_route->setText("搜索路线");
 
     search_city_log = new QPlainTextEdit;
-    search_city_log->setFixedHeight(200);
+    search_city_log->setFixedHeight(250);
+    search_city_log->setFixedWidth(200);
     search_city_log->setReadOnly(true);
 
     search_route_log = new QPlainTextEdit;
-    search_route_log->setFixedHeight(200);
+    search_route_log->setFixedHeight(250);
+    //search_route_log->setFixedWidth(200);
     search_route_log->setReadOnly(true);
 
 
@@ -46,11 +48,62 @@ void MainWindow::init_right() {
     del_city->setText("删除城市");
     add_route->setText("添加路线");
     del_route->setText("删除路线");
+    search_city_input_view = new QHBoxLayout;
+    search_route_input_view = new QHBoxLayout;
 
-    right_city->addWidget(search_city);
+    search_city_input_view->addWidget(search_city);
+    search_city_input = new QLineEdit;
+    search_city_input->setFixedHeight(20);
+    search_city_input->setFixedWidth(70);
+    search_route_start_input = new QLineEdit;
+    search_route_start_input->setFixedHeight(20);
+    search_route_start_input->setFixedWidth(45);
+    search_route_end_input = new QLineEdit;
+    search_route_end_input->setFixedHeight(20);
+    search_route_end_input->setFixedWidth(45);
+    search_city_input_view->addWidget(search_city_input);
+
+
+    search_route_start = new QLabel;
+    search_route_start->setText("搜索路线 起点");
+
+    search_route_end = new QLabel;
+    search_route_end->setText("终点");
+
+    search_route_num = new QLabel;
+    search_route_num->setText("车次");
+
+    search_route_num_input = new QLineEdit;
+    search_route_num_input->setFixedHeight(20);
+    search_route_num_input->setFixedWidth(45);
+
+
+
+
+
+    search_route_input_view->addWidget(search_route_start);
+    search_route_input_view->addWidget(search_route_start_input);
+    search_route_input_view->addWidget(search_route_end);
+    search_route_input_view->addWidget(search_route_end_input);
+    search_route_input_view->addWidget(search_route_num);
+    search_route_input_view->addWidget(search_route_num_input);
+
+    search_city_edit = new QHBoxLayout;
+    search_route_edit = new QHBoxLayout;
+
+    search_city_edit->addWidget(add_city);
+    search_city_edit->addWidget(del_city);
+
+    search_route_edit->addWidget(add_route);
+    search_route_edit->addWidget(del_route);
+
+    right_city->addLayout(search_city_input_view);
     right_city->addWidget(search_city_log);
-    right_route->addWidget(search_route);
+    right_city->addLayout(search_city_edit);
+
+    right_route->addLayout(search_route_input_view);
     right_route->addWidget(search_route_log);
+    right_route->addLayout(search_route_edit);
 }
 
 void MainWindow::initUI() {

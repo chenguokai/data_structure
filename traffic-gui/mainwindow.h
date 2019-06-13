@@ -9,6 +9,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QLineEdit>
 
 namespace Ui {
 class MainWindow;
@@ -43,10 +44,18 @@ public:
     QVBoxLayout* right_route;
     QLabel* search_city;
     QLabel* search_route;
-    QLabel *search_route_start, *search_route_end;
+    QLabel *search_route_start, *search_route_end, *search_route_num;
     QPlainTextEdit* search_city_log;
     QPlainTextEdit* search_route_log;
     QPushButton *add_city, *del_city, *add_route, *del_route;
+    QLineEdit* search_city_input;
+    QLineEdit* search_route_start_input;
+    QLineEdit* search_route_end_input;
+    QLineEdit* search_route_num_input;
+    QHBoxLayout* search_city_input_view;
+    QHBoxLayout* search_route_input_view;
+    QHBoxLayout* search_city_edit;
+    QHBoxLayout* search_route_edit;
 
 
 private:
