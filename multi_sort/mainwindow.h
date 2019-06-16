@@ -54,6 +54,8 @@ public:
     QHBoxLayout* name_view;
     QVBoxLayout* main_view;
     QPushButton* kickstart;
+public slots:
+    void start_sort();
 
 private:
     Ui::MainWindow *ui;

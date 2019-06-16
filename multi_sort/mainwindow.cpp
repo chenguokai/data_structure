@@ -97,5 +97,9 @@ void MainWindow::initUI() {
 
 }
 void MainWindow::initSlots() {
+    connect(kickstart,SIGNAL(clicked(bool)),this,SLOT(start_sort()));
+}
 
+void MainWindow::start_sort() {
+    res->setPlainText("Test success");
 }
