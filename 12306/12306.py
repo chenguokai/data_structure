@@ -140,6 +140,7 @@ if __name__ == '__main__':
                             'price': p
                         }
                         train_infos.append(rail)
+                        sleep(0.1)
                 if not valid:
                     break
             if valid:
@@ -150,5 +151,6 @@ if __name__ == '__main__':
             finished += 1
             finish_list.append((t['id'], t["week"]))
             print(f"{t['id']} on {t['week']} train finished. rate: {finished / len(train)}")
+            sleep(1)
     except:
         json.dump(finish_list, finished_file)
