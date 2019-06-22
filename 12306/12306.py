@@ -45,7 +45,10 @@ if __name__ == '__main__':
         finished = 0
 
         for t in train:
-            if t["id"] in finish_list:
+            valid = True
+            if (t["id"], t["week"]) in finish_list:
+                finished += 1
+                print(f"{t['id']} train finished. rate: {finished / len(train)}")
                 continue
             train_infos = []
             request_url = f"https://kyfw.12306.cn/otn/czxx/queryByTrainNo?train_no={t['train_no']}&from_station_telecode={stations[t['from']]}&to_station_telecode={stations[t['to']]}&depart_date={t['time']}"
@@ -96,26 +99,25 @@ if __name__ == '__main__':
                     to_station = info[j]['station']
                     station_infos = []
                     found = None
-                    while True:
-                        for response in requests.get(
-                                f"https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date="
-                                f"{from_time.date()}&leftTicketDTO.from_station={stations[from_station]}"
-                                f"&leftTicketDTO.to_station={stations[to_station]}"
-                                f"&purpose_codes=ADULT").json()["data"]["result"]:
-                            tmp = response.split('|')
-                            station_infos.append({
-                                "from_station": tmp[6],
-                                "to_station": tmp[7],
-                                "id": tmp[2],
-                                "from_station_no": tmp[16],
-                                "to_station_no": tmp[17],
-                                "seat_types": tmp[35]
-                            })
-                        try:
-                            found = next(x for x in station_infos if x['id'] == t['train_no'])
-                            break
-                        except StopIteration:
-                            continue
+                    for response in requests.get(
+                            f"https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date="
+                            f"{from_time.date()}&leftTicketDTO.from_station={stations[from_station]}"
+                            f"&leftTicketDTO.to_station={stations[to_station]}"
+                            f"&purpose_codes=ADULT").json()["data"]["result"]:
+                        tmp = response.split('|')
+                        station_infos.append({
+                            "valid": tmp[0],
+                            "from_station": tmp[6],
+                            "to_station": tmp[7],
+                            "id": tmp[2],
+                            "from_station_no": tmp[16],
+                            "to_station_no": tmp[17],
+                            "seat_types": tmp[35]
+                        })
+                    found = next(x for x in station_infos if x['id'] == t['train_no'])
+                    if found['valid'] == '':
+                        valid = False
+                        break
                     response = requests.get(
                         f"https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice?train_no={found['id']}"
                         f"&from_station_no={found['from_station_no']}&to_station_no={found['to_station_no']}"
@@ -138,13 +140,15 @@ if __name__ == '__main__':
                             'price': p
                         }
                         train_infos.append(rail)
-            sleep(1)
-            with open(f"./trains{name}/{t['id']}.txt", "w+") as f:
-                for info in train_infos:
-                    f.write(
-                        f"{info['name']} {info['from_station']} {info['start_time']} {info['to_station']} {info['arrive_time']} {info['used_time']} {info['seat_type']} {info['price']}\n")
+                if not valid:
+                    break
+            if valid:
+                with open(f"./trains{name}/{t['id']}_{t['week']}.txt", "w+") as f:
+                    for info in train_infos:
+                        f.write(
+                            f"{info['name']} {info['from_station']} {info['start_time'].strftime('%a')} {info['start_time'].time()} {info['to_station']} {info['arrive_time'].strftime('%a')} {info['arrive_time'].time()} {info['used_time']} {info['seat_type']} {info['price']}\n")
             finished += 1
-            finish_list.append(t['id'])
-            print(f"{t['id']} train finished. rate: {finished / len(train)}")
+            finish_list.append((t['id'], t["week"]))
+            print(f"{t['id']} on {t['week']} train finished. rate: {finished / len(train)}")
     except:
         json.dump(finish_list, finished_file)
