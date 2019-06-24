@@ -9,12 +9,12 @@ import requests
 if len(sys.argv) > 1:
     name = f"_{sys.argv[1]}"
 else:
-    name = ""
+    name = "_0"
 
-finished_file = open(f"finished{name}.json", "w+")
 try:
+    finished_file = open(f"finished{name}.json", "r+")
     finish_list = json.load(finished_file)
-except json.JSONDecodeError:
+except (json.JSONDecodeError, FileNotFoundError) as e:
     finish_list = []
 
 if __name__ == '__main__':
@@ -46,9 +46,9 @@ if __name__ == '__main__':
 
         for t in train:
             valid = True
-            if (t["id"], t["week"]) in finish_list:
+            if [t["id"], t["week"]] in finish_list:
                 finished += 1
-                print(f"{t['id']} train finished. rate: {finished / len(train)}")
+                print(f"{t['id']} train on {t['week']} finished. rate: {finished / len(train)}")
                 continue
             train_infos = []
             request_url = f"https://kyfw.12306.cn/otn/czxx/queryByTrainNo?train_no={t['train_no']}&from_station_telecode={stations[t['from']]}&to_station_telecode={stations[t['to']]}&depart_date={t['time']}"
@@ -153,4 +153,5 @@ if __name__ == '__main__':
             print(f"{t['id']} on {t['week']} train finished. rate: {finished / len(train)}")
             sleep(1)
     except:
+        finished_file = open(f"finished{name}.json", "w")
         json.dump(finish_list, finished_file)
