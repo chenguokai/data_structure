@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     //ui->setupUi(this);
+    initDatabase();
     initUI();
     initSlots();
 
@@ -14,6 +15,52 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+int MainWindow::day_judger(std::string str) {
+#define MAG 86400
+    if (str == "Mon") return MAG * 1;
+    else if (str == "Tue") return MAG * 2;
+    else if (str == "Wed") return MAG * 3;
+    else if (str == "Thu") return MAG * 4;
+    else if (str == "Fri") return MAG * 5;
+    else if (str == "Sat") return MAG * 6;
+    else if (str == "Sun") return MAG * 7;
+    else return -1;
+#undef MAG
+}
+
+void MainWindow::initDatabase() {
+    int hours,minutes,seconds;
+    struct trans rec;
+#define FILEPATH "/Users/cgk/Documents/CPP/data_structure/12306/merge/new.txt"
+    freopen(FILEPATH,"r",stdin);
+    std::ios::sync_with_stdio(false);
+    int counts = 0;
+    while (!(std::cin.eof())) {
+        std::cout<<++counts<<"\n";
+        std::cin>>rec.v_name>>rec.v_start>>rec.start_day>>rec.start_clock>>rec.v_end>>rec.end_day>>rec.end_clock>>rec.length_str>>rec.seat_type>>rec.price;
+
+        if (rec.v_name[0] == 'C') {
+            rec.v_type = 0;
+        } else {
+            rec.v_type = 1;
+        }
+        std::sscanf(rec.start_clock.c_str(),"%d:%d:%d",&hours,&minutes,&seconds);
+        rec.start_time = day_judger(rec.start_day) + hours * 3600 + minutes * 60 + seconds;
+        std::sscanf(rec.end_clock.c_str(),"%d:%d:%d",&hours,&minutes,&seconds);
+        rec.end_time = day_judger(rec.end_day) + hours * 3600 + minutes * 60 + seconds;
+        rec.length = rec.end_time - rec.start_time;
+        if (rec.start_time < 0 || rec.end_time < 0) {
+            // we have got a wrong data base
+            std::cout<<"The database is corrupted!\n";
+            std::exit(0);
+        }
+        cities.insert(rec.v_start);
+        cities.insert(rec.v_end);
+        v.push_back(rec);
+    }
+
 }
 
 void MainWindow::init_right() {
@@ -117,10 +164,14 @@ void MainWindow::initUI() {
     to_station->setModel(to_list->model());
     from_station->setView(from_list);
     to_station->setView(to_list);
-    for (int i = 0; i < 5; ++i)
-        {
-            from_station->addItem("item " + QString::number(i));
-        }
+    std::set<std::string>::iterator i;
+    for (i = cities.begin(); i != cities.end(); ++i ){
+            from_station->addItem((QString)((*i).c_str()));
+    }
+    for (i = cities.begin(); i != cities.end(); ++i ){
+            to_station->addItem((QString)((*i).c_str()));
+    }
+
     inputview = new QHBoxLayout;
     from_des = new QLabel;
     to_des = new QLabel;
@@ -140,6 +191,9 @@ void MainWindow::initUI() {
     mode_list = new QListWidget;
     mode->setModel(mode_list->model());
     mode->setView(mode_list);
+    mode->addItem("最快到达");
+    mode->addItem("最省钱到达");
+    mode->addItem("中转最少到达");
 
     modeview = new QHBoxLayout;
     modeview->addWidget(mode_des);
