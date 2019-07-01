@@ -83,9 +83,12 @@ void MainWindow::start_route() {
             }
             ins[now]=false;
     }
-    while (dst != src) {
+    while (dst != src && dis[dst] != 1e15) {
         stk.push(v[pre[dst]]);
         dst = pre_node[dst];
+    }
+    if (dis[dst] == 1e15) {
+        log = log + "未找到合法方案\n";
     }
     while (!stk.empty()) {
         //std::cout<<stk.top().v_name<<std::endl;
