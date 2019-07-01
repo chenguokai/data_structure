@@ -3,29 +3,32 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+    ui(new Ui::MainWindow) {
     //ui->setupUi(this);
     initUI();
     initSlots();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
 void MainWindow::initUI() {
-
     open_file_des = new QLabel;
-    open_file_des->setText("数据文件：");
+    open_file_des->setText("数据文件");
     path = new QLineEdit;
     path->setPlaceholderText("数据文件路径");
-    path->setFixedHeight(18);
+    path->setFixedHeight(25);
+    open_file_button = new QPushButton();
+    open_file_button->setText("选择文件");
+    file_open_action = new QAction(tr("打开文件"), this);
+    file_open_action->setShortcut(QKeySequence(tr("Ctrl+O")));
+    file_open_action->setStatusTip(tr("打开一个文件"));
 
     file_view = new QHBoxLayout;
     file_view->addWidget(open_file_des);
     file_view->addWidget(path);
+    file_view->addWidget(open_file_button);
 
     sort1_des = new QLabel;
     sort1_des->setText("排序参数1");
@@ -89,17 +92,31 @@ void MainWindow::initUI() {
     main_view->addWidget(res);
     main_view->addLayout(name_view);
 
-
-
     auto central = new QWidget;
     central->setLayout(main_view);
     setCentralWidget(central);
-
 }
+
 void MainWindow::initSlots() {
-    connect(kickstart,SIGNAL(clicked(bool)),this,SLOT(start_sort()));
+    connect(kickstart, SIGNAL(clicked(bool)), this, SLOT(start_sort()));
+    connect(open_file_button, SIGNAL(clicked(bool)), this, SLOT(open_file_choose()));
+    connect(file_open_action, SIGNAL(triggered()), this, SLOT(open_file_choose()));
 }
 
 void MainWindow::start_sort() {
     res->setPlainText("Test success");
+}
+
+void MainWindow::open_file_choose() {
+    res->setPlainText("Opening File");
+    open_file_dialog = new QFileDialog(this);
+    open_file_dialog->setWindowTitle(tr("选择文件"));
+    open_file_dialog->setDirectory(".");
+    open_file_dialog->setFileMode(QFileDialog::ExistingFile);
+    open_file_dialog->setViewMode(QFileDialog::Detail);
+    QStringList file_names;
+    if(open_file_dialog->exec()) {
+        file_names = open_file_dialog->selectedFiles();
+        path->setText(file_names[0]);
+    }
 }

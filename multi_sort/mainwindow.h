@@ -29,7 +29,9 @@ public:
     void initUI();
     void initSlots();
     QLabel* open_file_des;
-    QFileDialog* open_file;
+    QPushButton *open_file_button;
+    QFileDialog* open_file_dialog;
+    QAction *file_open_action;
     QLabel* sort1_des;
     QLabel* sort2_des;
     QLabel* sort3_des;
@@ -56,6 +58,7 @@ public:
     QPushButton* kickstart;
 public slots:
     void start_sort();
+    void open_file_choose();
 
 private:
     Ui::MainWindow *ui;

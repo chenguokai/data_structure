@@ -1,0 +1,7 @@
+data/com.github.liushiqi.MultipleSort.desktop.in
+data/com.github.liushiqi.MultipleSort.appdata.xml.in
+data/com.github.liushiqi.MultipleSort.gschema.xml
+src/window.ui
+src/main.vala
+src/window.vala
+

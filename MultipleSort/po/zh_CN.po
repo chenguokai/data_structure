@@ -1,0 +1,29 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Liu Shiqi <liushiqi17@mails.ucas.ac.cn>, 2019.
+# liu <liushiqi17@mails.ucas.ac.cn>, 2019.
+#
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2019-06-30 23:56+0800\n"
+"Last-Translator: liu <liushiqi17@mails.ucas.ac.cn>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: unnamed project\n"
+"Language-Team: Chinese - China <liushiqi17@mails.ucas.ac.cn>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"PO-Revision-Date: 2019-06-30 23:58+0800\n"
+"X-Generator: Gtranslator 3.32.0\n"
+
+#: src/file_select.ui:15
+msgctxt "file select title"
+msgid "Please select a file."
+msgstr "请选择一个文件"
+
+#: src/file_select.ui:30
+msgctxt "file name label"
+msgid "File"
+msgstr "文件"

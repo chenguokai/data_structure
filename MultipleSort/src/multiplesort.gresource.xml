@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/liushiqi/MultipleSort">
+    <file>file_select.ui</file>
+    <file>keyword_select.ui</file>
+  </gresource>
+</gresources>

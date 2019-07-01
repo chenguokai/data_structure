@@ -53,9 +53,14 @@ if __name__ == '__main__':
                     print(f"{t['id']} train on {t['week']} finished. rate: {finished / len(train)}")
                     continue
                 train_infos = []
-                request_url = f"https://kyfw.12306.cn/otn/czxx/queryByTrainNo?train_no={t['train_no']}" \
-                    f"&from_station_telecode={stations[t['from']]}&to_station_telecode={stations[t['to']]}" \
-                    f"&depart_date={t['time']}"
+                try:
+                    request_url = f"https://kyfw.12306.cn/otn/czxx/queryByTrainNo?train_no={t['train_no']}" \
+                                  f"&from_station_telecode={stations[t['from']]}&to_station_telecode={stations[t['to']]}" \
+                                  f"&depart_date={t['time']}"
+                except KeyError:
+                    finish_list.append([t['id'], t["week"]])
+                    print(f"{t['id']} train skipped, reason: station not found.")
+                    continue
                 sleep(0.5)
                 response = session.get(request_url).json()
                 info1 = response["data"]["data"]

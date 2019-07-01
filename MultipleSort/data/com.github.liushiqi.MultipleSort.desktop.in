@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=multiplesort
+Exec=multiplesort
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true
