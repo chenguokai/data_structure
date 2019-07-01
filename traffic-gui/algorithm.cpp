@@ -1,6 +1,98 @@
 #include "mainwindow.h"
+double len_judger(std::string mode_str,struct trans v) {
+    if (mode_str.find("快") != std::string::npos) {
+        return v.length;
+    } else if (mode_str.find("省") != std::string::npos) {
+        return v.price;
+    } else {
+        // 少
+        return 1;
+    }
+}
+
 void MainWindow::start_route() {
-    result->setPlainText("Successfully push!");
+    QString log = "正在查找\n";
+    result->setPlainText(log);
+    std::string src_str = from_station->currentText().toStdString();
+    std::string dst_str = to_station->currentText().toStdString();
+    std::string mode_str = mode->currentText().toStdString();
+    std::string a,b;
+    int src = m.find(src_str)->second,dst = m.find(dst_str)->second;
+    int from_num,to_num;
+    node t;
+    for (int i=0;i<40000;++i) edge[i].clear();
+    if (mode_str.find("飞机") != std::string::npos) {
+        // we choose flight/ C trains
+        for (int i = 0; i < v.size();++i)
+            if (v[i].v_type == 0) {
+                a = v[i].v_start;
+                b = v[i].v_end;
+                from_num = m.find(a)->second;
+                to_num = m.find(b)->second;
+                t.to = to_num;
+                t.len = len_judger(mode_str,v[i]);
+                t.offset = i;
+                t.beg = v[i].start_time;
+                edge[from_num].push_back(t);
+            }
+    } else {
+        for (int i = 0; i < v.size();++i)
+            if (v[i].v_type == 1) {
+                a = v[i].v_start;
+                b = v[i].v_end;
+                from_num = m.find(a)->second;
+                to_num = m.find(b)->second;
+                t.to = to_num;
+                t.len = len_judger(mode_str,v[i]);
+                t.offset = i;
+                t.beg = v[i].start_time;
+                edge[from_num].push_back(t);
+            }
+    }
+    for (int i=0;i<40000;++i) {
+        dis[i] = 1e15;
+        ins[i] = false;
+        pre[i] = 0;
+        pre_node[i] = 0;
+    }
+
+    std::memset(reach_time,0x3f,sizeof(reach_time));
+    reach_time[src] = 0;
+    dis[src] = 0;
+    ins[src] = true;
+    int now;
+    s.insert(std::make_pair(0,src));
+    while (!s.empty()){
+        now=s.begin()->second;
+        s.erase(std::make_pair(dis[now],now));
+        for (int i=0;i<edge[now].size();++i)
+            if (dis[edge[now][i].to]>dis[now]+edge[now][i].len)
+            if (reach_time[now] <= edge[now][i].beg) {
+                if (ins[edge[now][i].to]){
+                    s.erase(s.find(std::make_pair(dis[edge[now][i].to],edge[now][i].to)));
+                    dis[edge[now][i].to]=dis[now]+edge[now][i].len;
+                    s.insert(std::make_pair(dis[edge[now][i].to],edge[now][i].to));
+                }else{
+                    ins[edge[now][i].to]=true;
+                    dis[edge[now][i].to]=dis[now]+edge[now][i].len;
+                    s.insert(std::make_pair(dis[edge[now][i].to],edge[now][i].to));
+                }
+                pre[edge[now][i].to] = edge[now][i].offset;
+                pre_node[edge[now][i].to] = now;
+                reach_time[edge[now][i].to] = reach_time[now] + v[edge[now][i].offset].length; // cannot use edge's len because it is not always the time
+            }
+            ins[now]=false;
+    }
+    while (dst != src) {
+        stk.push(v[pre[dst]]);
+        dst = pre_node[dst];
+    }
+    while (!stk.empty()) {
+        //std::cout<<stk.top().v_name<<std::endl;
+        log = log + "车次:" + stk.top().v_name.c_str() + "始发站点" + stk.top().v_start.c_str() +",发车时间" + stk.top().start_day.c_str() + " " + stk.top().start_clock.c_str() + "，到达站点：" + stk.top().v_end.c_str() + "，票价" + QString::number(stk.top().price) +"\n";
+        stk.pop();
+    }
+    result->setPlainText(log);
 
 }
 void MainWindow::add_city_func() {
@@ -20,9 +112,13 @@ void MainWindow::add_city_func() {
         if (city_mode == ADD_OP) {
             search_city_log->setPlainText("添加城市 "+search_city_input->text()+"成功");
             cities.insert(search_city_input->text().toStdString());
+            m.insert(std::make_pair(search_city_input->text().toStdString(),city_counts++));
+            from_station->addItem(search_city_input->text());
+            to_station->addItem(search_city_input->text());
         } else if (city_mode == DEL_OP) {
             search_city_log->setPlainText("删除城市 成功");
             cities.erase(search_city_input->text().toStdString());
+            m.erase(search_city_input->text().toStdString());
             for (int i=0;i<v.size();++i) {
                 if (v[i].v_start == search_city_input->text().toStdString() || v[i].v_end == search_city_input->text().toStdString()) {
                     v.erase(v.begin()+i);
@@ -123,12 +219,12 @@ void MainWindow::add_route_func() {
             if (tmp.start_time < 0 || tmp.end_time < 0 || (cities.find(tmp.v_start) == cities.end()) || (cities.find(tmp.v_end) == cities.end())) {
                 // we have got a wrong data base
                 log = log + "添加失败，输入不合法\n";
-                return ;
+                search_route_log->setPlainText(log);
+            } else {
+                log = log + "添加成功\n";
+                search_route_log->setPlainText(log);
+                v.push_back(tmp);
             }
-
-            log = log + "添加成功\n";
-            search_route_log->setPlainText(log);
-            v.push_back(tmp);
 
         } else if (route_mode == DEL_OP) {
             search_route_log->setPlainText("删除成功");

@@ -167,6 +167,7 @@ void MainWindow::initUI() {
     std::set<std::string>::iterator i;
     for (i = cities.begin(); i != cities.end(); ++i ){
             from_station->addItem((QString)((*i).c_str()));
+            m.insert(std::make_pair(*i,city_counts++));
     }
     for (i = cities.begin(); i != cities.end(); ++i ){
             to_station->addItem((QString)((*i).c_str()));
@@ -191,9 +192,12 @@ void MainWindow::initUI() {
     mode_list = new QListWidget;
     mode->setModel(mode_list->model());
     mode->setView(mode_list);
-    mode->addItem("最快到达");
-    mode->addItem("最省钱到达");
-    mode->addItem("中转最少到达");
+    mode->addItem("最快到达-火车");
+    mode->addItem("最省钱到达-火车");
+    mode->addItem("中转最少到达-火车");
+    mode->addItem("最快到达-飞机");
+    mode->addItem("最省钱到达-飞机");
+    mode->addItem("中转最少到达-飞机");
 
     modeview = new QHBoxLayout;
     modeview->addWidget(mode_des);

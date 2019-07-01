@@ -17,6 +17,8 @@
 #include <cstring>
 #include <string>
 #include <set>
+#include <map>
+#include <stack>
 
 struct trans{
     int v_type;
@@ -40,9 +42,26 @@ struct trans{
 
     /* K6735 乌鲁木齐 Mon 13:28:00 石河子 Mon 14:53:00 1:25:00 硬座 21.5 */
 };
+struct node {
+    int to; // the destination
+    int offset;
+    int beg;
+    double len; // the path's length
+
+};
 extern std::vector<trans>v;
 extern std::set<std::string>cities;
 extern std::string start_stat,end_stat,train_no_str,start_time_str,end_time_str,price_str;
+extern int city_counts;
+extern std::map<std::string,int>m; // make connections between cities' name and the node number
+extern std::vector<node>edge[40000];
+extern std::set<std::pair<int,int> >s;
+extern double dis[40000];
+extern bool ins[1010];
+extern int pre[40000];
+extern int pre_node[40000];
+extern std::stack<trans>stk;
+extern int reach_time[40000];
 
 namespace Ui {
 class MainWindow;
