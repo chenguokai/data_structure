@@ -10,6 +10,39 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cstring>
+#include <string>
+#include <set>
+
+struct trans{
+    int v_type;
+    /*
+     * type 0: flight (actually C trains)
+     * type 1: trains (actually non-C trains)
+    */
+    std::string v_name;
+    std::string v_start;
+    std::string v_end;
+    std::string start_day;
+    std::string end_day;
+    std::string start_clock;
+    std::string end_clock;
+    int start_time;
+    int end_time;
+    int length;
+    std::string length_str;
+    std::string seat_type;
+    double price;
+
+    /* K6735 乌鲁木齐 Mon 13:28:00 石河子 Mon 14:53:00 1:25:00 硬座 21.5 */
+};
+extern std::vector<trans>v;
+extern std::set<std::string>cities;
+extern std::string start_stat,end_stat,train_no_str,start_time_str,end_time_str,price_str;
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +58,8 @@ public:
     void initUI();
     void init_right();
     void initSlots();
+    void initDatabase();
+    int day_judger(std::string str);
     int city_mode; // the button's function
     int route_mode; // the button's function
 #define ADD_OP 1
