@@ -3,5 +3,6 @@
   <gresource prefix="/com/github/liushiqi/MultipleSort">
     <file>file_select.ui</file>
     <file>keyword_select.ui</file>
+    <file>sort_result.ui</file>
   </gresource>
 </gresources>

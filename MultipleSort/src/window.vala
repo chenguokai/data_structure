@@ -43,7 +43,7 @@ namespace FileSelect {
 	}
 }
 
-private class Row {
+public class Row {
     public string[] elems;
 
     public Row(string[] elems) {
@@ -82,12 +82,6 @@ namespace KeyWordSelect {
 	    private string[] keys = {};
 
 	    [GtkChild]
-	    private Gtk.Window sort_result_window;
-
-	    [GtkChild]
-	    private Gtk.TextView sort_result;
-
-	    [GtkChild]
 	    private Gtk.ComboBoxText key_word_1;
 
 	    [GtkChild]
@@ -105,13 +99,14 @@ namespace KeyWordSelect {
 	    [GtkChild]
 	    private Gtk.ComboBoxText type_3;
 
-	    [GtkCallback]
-	    public bool result_destroy(Gdk.EventAny event) {
-	        sort_result_window.hide();
-	        debug("Result window hided.");
-	        present();
-	        return false;
-	    }
+	    [GtkChild]
+	    private Gtk.ComboBoxText order_1;
+
+	    [GtkChild]
+	    private Gtk.ComboBoxText order_2;
+
+	    [GtkChild]
+	    private Gtk.ComboBoxText order_3;
 
 	    [GtkCallback]
 	    public void sort_cancel() {
@@ -120,52 +115,66 @@ namespace KeyWordSelect {
 	        window.present();
 	    }
 
-	    [GtkCallback]
-	    public void sort_confirm() {
+	    bool compare(Row a, Row b, int key_word, int type, int order) {
+	        if (type == 0) {
+	            if (order == 0)
+	                return a.elems[key_word] > b.elems[key_word];
+	            else
+	                return a.elems[key_word] < b.elems[key_word];
+	        } else if (type == 1) {
+	            if (order == 0)
+	                return int.parse(a.elems[key_word]) > int.parse(b.elems[key_word]);
+	            else
+	                return int.parse(a.elems[key_word]) < int.parse(b.elems[key_word]);
+	        } else {
+	            if (order == 0)
+	                return double.parse(a.elems[key_word]) > double.parse(b.elems[key_word]);
+	            else
+	                return double.parse(a.elems[key_word]) < double.parse(b.elems[key_word]);
+	        }
+	    }
+	    
+	    bool equal(Row a, Row b, int key_word) {
+	        return a.elems[key_word] == b.elems[key_word];
+	    }
+
+	    public void inner_sort() {
 	        int i = key_word_1.get_active(), j = key_word_2.get_active(), k = key_word_3.get_active();
 	        int type_1 = this.type_1.get_active(), type_2 = this.type_2.get_active(), type_3 = this.type_3.get_active();
-	        if (k != -1)
-    	        merge_sort(rows, (a, b) => {
-    	            if (type_3 == 0) return a.elems[k] < b.elems[k];
-    	            else if (type_3 == 1) return int.parse(a.elems[k]) < int.parse(b.elems[k]);
-    	            else return double.parse(a.elems[k]) < double.parse(b.elems[k]);
-    	        });
-    	    debug("Sort phase 1 finished.");
-	        if (j != -1)
-    	        merge_sort(rows, (a, b) => {
-    	            if (type_2 == 0) return a.elems[j] < b.elems[j];
-    	            else if (type_2 == 1) return int.parse(a.elems[j]) < int.parse(b.elems[j]);
-    	            else return double.parse(a.elems[j]) < double.parse(b.elems[j]);
-    	        });
-    	    debug("Sort phase 2 finished.");
-	        if (i != -1)
-    	        merge_sort(rows, (a, b) => {
-    	            if (type_1 == 0) return a.elems[i] < b.elems[i];
-    	            else if (type_1 == 1) return int.parse(a.elems[i]) < int.parse(b.elems[i]);
-    	            else return double.parse(a.elems[i]) < double.parse(b.elems[i]);
-    	        });
-    	    debug("Sort phase 3 finished.");
+	        int order_1 = this.order_1.get_active(), order_2 = this.order_2.get_active(), order_3 = this.order_3.get_active();
+	        merge_sort(rows, (a, b) => {
+	            if (i == -1 || equal(a, b, i)) {
+	                if (j == -1 || equal(a, b, j)) {
+	                    if (k != -1)
+    	                    return compare(a, b, k, type_3, order_3);
+    	                else return true;
+	                } else
+	                    return compare(a, b, j, type_2, order_2);
+	            } else {
+	                return compare(a, b, i, type_1, order_1);
+	            }
+	        });
+	    }
+
+	    [GtkCallback]
+	    public void sort_confirm() {
+            var begin = new DateTime.now_local();
+	        this.inner_sort();
+            var end = new DateTime.now_local();
     	    string s = "";
             for (int index = 0; index < keys.length; ++index) {
-                /*sort_result.insert_column(index);
-                Gtk.Label label = new Gtk.Label(keys[index]);
-                label.hexpand = false;
-                label.halign = Gtk.Align.FILL;
-                sort_result.attach(label, index, 0);*/
-                s += keys[index] + "\t";
+                s += keys[index] + ",";
             }
             s += "\n";
-            for (i = 0; i < rows.length; ++i) {
-                //sort_result.insert_row(i);
-                for (j = 0; j < keys.length; j++) {
-                    s += rows[i].elems[j] + "\t";
-                    //sort_result.attach(new Gtk.Label(rows[i].elems[j]), j, i + 1);
+            for (int i = 0; i < rows.length; ++i) {
+                for (int j = 0; j < keys.length; j++) {
+                    s += rows[i].elems[j] + ",";
                 }
                 s += "\n";
             }
-            sort_result.buffer.text = s;
             this.hide();
-            sort_result_window.present();
+            Gtk.Window window = new SortResult.Window(this.application, file, s, end.difference(begin));
+	        window.present();
 	    }
 
 		public Window(Gtk.Application app, File file) {
@@ -208,4 +217,65 @@ namespace KeyWordSelect {
 			}
 		}
 	}
+}
+
+namespace SortResult {
+	[GtkTemplate (ui = "/com/github/liushiqi/MultipleSort/sort_result.ui")]
+    public class Window : Gtk.Window {
+        private string file_result;
+        private File file;
+
+        [GtkChild]
+        Gtk.Label sort_result;
+
+        [GtkCallback]
+        void close_clicked() {
+	        close();
+	        Gtk.Window window = new KeyWordSelect.Window(this.application, file);
+	        window.present();
+        }
+
+        [GtkCallback]
+        void save_confirmed() {
+            var file_save = new Gtk.FileChooserDialog(null, this, Gtk.FileChooserAction.SAVE);
+            file_save.add_button("_Cancel", Gtk.ResponseType.CANCEL);
+            file_save.add_button("_Save", Gtk.ResponseType.OK);
+            file_save.set_do_overwrite_confirmation(true);
+            if (file_save.run() != Gtk.ResponseType.OK) {
+                file_save.destroy();
+                return;
+            }
+            try {
+                File write_to = file_save.get_file();
+                DataOutputStream file = null;
+                if (write_to.query_exists())
+                    file = new DataOutputStream(write_to.replace(null, false, FileCreateFlags.NONE));
+                else
+                    file = new DataOutputStream(write_to.create(FileCreateFlags.NONE));
+                file.put_string(file_result);
+            } catch(Error e) {
+                error("%s\n", e.message);
+            }
+            file_save.destroy();
+        }
+
+        public Window(Gtk.Application app, File file, string s, TimeSpan timeused) {
+            Object(application: app);
+            this.file = file;
+            this.file_result = s;
+            var screen = this.get_screen ();
+            
+            var css_provider = new Gtk.CssProvider();
+            try {
+                css_provider.load_from_data("""label#sort-time {
+                                                 font: 40px Sans;
+                                               }""");
+                Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+            } catch (Error e) {
+                error("css load error");
+            }
+            
+            sort_result.label = @"Time used $(timeused / 1000 / 60):$(timeused / 1000 % 60).$(timeused % 1000)";
+        }
+    }
 }

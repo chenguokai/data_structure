@@ -185,6 +185,81 @@
                 <property name="top_attach">2</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">order</property>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">order</property>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">order</property>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="order_2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item translatable="yes">ascend</item>
+                  <item translatable="yes">desend</item>
+                </items>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="order_3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item translatable="yes">ascend</item>
+                  <item translatable="yes">desend</item>
+                </items>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="order_1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item translatable="yes">ascend</item>
+                  <item translatable="yes">desend</item>
+                </items>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -240,27 +315,4 @@
       </object>
     </child>
   </template>
-  <object class="GtkWindow" id="sort_result_window">
-    <property name="can_focus">False</property>
-    <property name="default_width">560</property>
-    <property name="type_hint">dialog</property>
-    <property name="urgency_hint">True</property>
-    <signal name="delete-event" handler="result_destroy" swapped="no"/>
-    <child type="titlebar">
-      <object class="GtkHeaderBar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title" translatable="yes" context="keyword select title">Sort result</property>
-        <property name="show_close_button">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkTextView" id="sort_result">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="editable">False</property>
-        <property name="cursor_visible">False</property>
-      </object>
-    </child>
-  </object>
 </interface>
